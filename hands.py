@@ -3,7 +3,7 @@ from collections import Counter
 
 
 class Hands:
-    """Hands of player containing cards"""
+    """Hand of player containing cards"""
     def __init__(self, cards):
         self.__cards = cards if isinstance(cards, list) else list(cards)
 
@@ -21,13 +21,13 @@ class Hands:
         Deck.played_card(card_to_remove)
 
     def aces(self):
-        return [y for y in self.__cards if y.endswith("14")]
+        return [card for card in self.__cards if card.endswith("14")]
 
     def changers(self):
-        return [y for y in self.__cards if y.endswith("12")]
+        return [card for card in self.__cards if card.endswith("12")]
 
     def sevens(self):
-        return [y for y in self.__cards if y.endswith("07")]
+        return [card for card in self.__cards if card.endswith("07")]
 
     def non_special_cards(self):
         return [y for y in self.__cards if
@@ -53,22 +53,18 @@ class Hands:
         if len(self.__cards) == len(self.changers()):
             return self.__cards[0][0]
         else:
-            data = Counter(
-                [y[0] for y in self.my_cards() if not y.endswith("12")]
-            )
+            data = Counter([y[0] for y in self.my_cards() if not y.endswith("12")])
             most_common = data.most_common()[0][0]
             return most_common
 
     def second_most_freq(self):
         """Find second most frequent color when playing a changer"""
         if len(self.__cards) == len(self.changers()):
-            return ["B", "N", "L", "H"]
+            return Deck.colors
         else:
-            data = Counter(
-                [y[0] for y in self.__cards if not y.endswith("12")]
-            )
+            data = Counter([y[0] for y in self.__cards if not y.endswith("12")])
             if len(data.most_common()) == 1:
-                return ["B", "N", "L", "H"]
+                return Deck.colors
             else:
                 second_most_common = data.most_common()[1][0]
                 return second_most_common

@@ -3,12 +3,12 @@ import random
 
 class Deck:
     """Deck containing 32 cards divided into 4 colors"""
-    __colors = ["L", "B", "N", "H"]  # [Leaves, Ballz, Nuts, Hearths]
+    colors = ["L", "B", "N", "H"]  # [Leaves, Ballz, Nuts, Hearths]
     __values = range(7, 15)
     deck = []
     played_deck = []
 
-    for color in __colors:
+    for color in colors:
         for value in __values:
             if value in range(10, 15):
                 deck.append(f"{color}_{value}")
