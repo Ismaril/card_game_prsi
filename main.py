@@ -18,5 +18,7 @@ def master_mainloop():
 
 if __name__ == "__main__":
     GUI.start_screen()
-    GUI.after(4000, master_mainloop)  # run first time after X ms
+    GUI.after(2000, master_mainloop)  # run first time after X ms
     GUI.mainloop()
+
+# TODO: run loop continuously but skip some functions if there is no user input
