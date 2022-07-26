@@ -8,7 +8,6 @@ Additionally, here, added a rule to keep the game progressing based on the outco
 - no animations
 - winner of the round plays with one card less and loser gets one more, on the start of next round
 
-## TODO: change image
 ![in_game](https://user-images.githubusercontent.com/97543348/149820562-07bb87a7-8931-4b61-b147-2d49079a95ce.jpg)
 
 ## Project structure
