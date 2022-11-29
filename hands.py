@@ -1,6 +1,6 @@
 from deck import Deck
 from collections import Counter
-
+import constants as c
 
 class Hands:
     """Hand of player containing cards"""
@@ -21,19 +21,19 @@ class Hands:
         Deck.played_card(card_to_remove)
 
     def aces(self):
-        return [card for card in self.__cards if card.endswith("14")]
+        return [card for card in self.__cards if card.endswith(c.ACE)]
 
     def changers(self):
-        return [card for card in self.__cards if card.endswith("12")]
+        return [card for card in self.__cards if card.endswith(c.CHANGER)]
 
     def sevens(self):
-        return [card for card in self.__cards if card.endswith("07")]
+        return [card for card in self.__cards if card.endswith(c.SEVEN)]
 
     def non_special_cards(self):
         return [y for y in self.__cards if
-                not y.endswith("07")
-                and not y.endswith("12")
-                and not y.endswith("14")]
+                not y.endswith(c.SEVEN)
+                and not y.endswith(c.CHANGER)
+                and not y.endswith(c.ACE)]
 
     @staticmethod
     def best_pick(array, color, value):
@@ -53,7 +53,7 @@ class Hands:
         if len(self.__cards) == len(self.changers()):
             return self.__cards[0][0]
         else:
-            data = Counter([y[0] for y in self.my_cards() if not y.endswith("12")])
+            data = Counter([y[0] for y in self.my_cards() if not y.endswith(c.CHANGER)])
             most_common = data.most_common()[0][0]
             return most_common
 
@@ -62,7 +62,7 @@ class Hands:
         if len(self.__cards) == len(self.changers()):
             return Deck.colors
         else:
-            data = Counter([y[0] for y in self.__cards if not y.endswith("12")])
+            data = Counter([y[0] for y in self.__cards if not y.endswith(c.CHANGER)])
             if len(data.most_common()) == 1:
                 return Deck.colors
             else:

@@ -1,3 +1,8 @@
+import constants as c
+
+
+def card_template(color, number):
+    return f"{color}_{number}"
 
 
 class Card:
@@ -7,26 +12,26 @@ class Card:
         self.__color = self.__card[0]
 
     def is_ace(self):
-        return self.__value == "14"
+        return self.__value == c.ACE
 
     def is_changer(self):
-        return self.__value == "12"
+        return self.__value == c.CHANGER
 
     def is_seven(self):
-        return self.__value == "07"
+        return self.__value == c.SEVEN
 
     def is_non_special(self):
-        return self.__value in ["08", "09", "10", "11", "13"]
+        return self.__value in c.NON_SPECIAL
 
     def is_only_color(self):
         return len(self.__card) == 1
 
     def is_none(self):
         """Player does not have any playable cards"""
-        return self.__card == "n"
+        return self.__card == c.NONE_CARD
 
     def is_skipper(self):
-        return self.__card == "_"
+        return self.__card == c.SKIPPER_CARD
 
     def card_color(self):
         return self.__color
@@ -37,4 +42,3 @@ class Card:
     def get_card(self):
         """Return card"""
         return self.__card
-

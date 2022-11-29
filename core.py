@@ -1,11 +1,13 @@
-from PIL import ImageTk, Image
-from functools import partial
 from deck import Deck
 from card import Card
 from hands import Hands
-import tkinter as tk
+from functools import partial
+from PIL import ImageTk, Image
 import sys
+import os.path
 import random as r
+import tkinter as tk
+import constants as c
 
 DIST_BETWEEN_CARDS = 0.06
 MIDDLE_POS_HANDS = 0.53
@@ -95,11 +97,10 @@ class GUI(tk.Tk):
     def changer_icons_(self):
         """Create icons of 4 colors when playing any changer"""
         if Logic.changer_buttons:
-            colors = ["H", "B", "L", "N"]
             rely = 0.425
-            for color in colors:
+            for color in c.COLORS_ALL:
                 image = ImageTk.PhotoImage(
-                    Image.open(f"cards_ver_1/{color}.JPG"))
+                    Image.open(os.path.join("cards_ver_1", f"{color}.JPG")))
                 button = tk.Button(
                     self.main_grid,
                     image=image,
@@ -247,7 +248,7 @@ class Logic:
                     cls.player_turn = False
                     cls.pc_turn = True
             elif cls.middle_card.is_changer():
-                cls.middle_card = Card(r.choice(["B", "H", "N", "L"]))
+                cls.middle_card = Card(r.choice(c.COLORS_ALL))
             elif cls.middle_card.is_seven():
                 cls.seven_penalty += 2
 
