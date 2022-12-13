@@ -1,0 +1,9 @@
+# CARD TYPES
+NUMBERS_ALL = ["07", "08", "09", "10", "11", "12", "13", "14"]
+ACE = NUMBERS_ALL[-1]
+CHANGER = NUMBERS_ALL[5]
+SEVEN = NUMBERS_ALL[0]
+NON_SPECIAL = NUMBERS_ALL[1:5] + [NUMBERS_ALL[-2]]
+NONE_CARD = 'n'
+SKIPPER_CARD = '_'
+COLORS_ALL = ["L", "B", "N", "H"]  # [Leaves, Ballz, Nuts, Hearths]
