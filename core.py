@@ -45,11 +45,11 @@ class GUI(tk.Tk):
         """Give x cards to a pc's hand as images."""
         distance = 0
         for _ in Logic.pc_hands.my_cards():
-            image = ImageTk.PhotoImage(Image.open("back.JPG"))
+            image = ImageTk.PhotoImage(Image.open(c.CARD_STYLE_BACK + ".JPG"))
             label = tk.Label(self.main_grid, image=image)
             label.place(
                 relx=MIDDLE_POS_HANDS - (len(Logic.pc_hands.my_cards())/2*DIST_BETWEEN_CARDS) + distance,
-                rely=0.1,
+                rely=c.RELY_PC_CARDS,
                 anchor="n"
             )
             distance += DIST_BETWEEN_CARDS
@@ -60,7 +60,7 @@ class GUI(tk.Tk):
         """Give y cards to the player's hand as images and buttons"""
         distance = 0
         for index, card in enumerate(Logic.player_hands.my_cards()):
-            image = ImageTk.PhotoImage(Image.open(f"cards_ver_1/{card}.JPG"))
+            image = ImageTk.PhotoImage(Image.open(f"{c.CARD_STYLE_FRONT}/{card}.JPG"))
             button = tk.Button(
                 self.main_grid,
                 image=image,
@@ -69,7 +69,7 @@ class GUI(tk.Tk):
             )
             button.place(
                 relx=MIDDLE_POS_HANDS - (len(Logic.player_hands.my_cards())/2*DIST_BETWEEN_CARDS) + distance,
-                rely=0.9,
+                rely=c.RELY_PLAYER_CARDS,
                 anchor="s"
             )
             distance += DIST_BETWEEN_CARDS
@@ -79,35 +79,35 @@ class GUI(tk.Tk):
     def __middle_card(self):
         """Create image of the middle card."""
         image = ImageTk.PhotoImage(
-            Image.open(f"cards_ver_1/{Logic.middle_card.get_card()}.JPG"))
+            Image.open(f"{c.CARD_STYLE_FRONT}/{Logic.middle_card.get_card()}.JPG"))
         label = tk.Label(self.main_grid, image=image)
-        label.place(relx=0.6, rely=WIDGET_MIDDLE, anchor="center")
+        label.place(relx=c.RELY_PLAYED_CARD, rely=WIDGET_MIDDLE, anchor="center")
         self.row_rest.append(image)
         self.row_rest.append(label)
 
     def __deck_card(self):
         """Create a deck image and button."""
-        image = ImageTk.PhotoImage(Image.open("back.JPG"))
+        image = ImageTk.PhotoImage(Image.open(c.CARD_STYLE_BACK + ".JPG"))
         button = tk.Button(self.main_grid, image=image,
                            command=Logic.get_card_deck_button)
-        button.place(relx=0.4, rely=WIDGET_MIDDLE, anchor="center")
+        button.place(relx=c.RELY_DECK_CARD, rely=WIDGET_MIDDLE, anchor="center")
         self.row_rest.append(image)
         self.row_rest.append(button)
 
     def changer_icons_(self):
         """Create icons of 4 colors when playing any changer"""
         if Logic.changer_buttons:
-            rely = 0.425
+            rely = c.RELY_CHANGER_ICONS_BASE
             for color in c.COLORS_ALL:
                 image = ImageTk.PhotoImage(
-                    Image.open(os.path.join("cards_ver_1", f"{color}.JPG")))
+                    Image.open(os.path.join(c.CARD_STYLE_FRONT, f"{color}.JPG")))
                 button = tk.Button(
                     self.main_grid,
                     image=image,
                     command=partial(Logic.changer_icons, color)
                 )
                 button.place(relx=WIDGET_MIDDLE, rely=rely, anchor="center")
-                rely += 0.05
+                rely += c.RELY_CHANGER_ICONS
                 self.row_rest.append(image)
                 self.row_rest.append(button)
 
@@ -127,16 +127,23 @@ class GUI(tk.Tk):
             frame.pack(fill="both", expand=True)
             frame.grid_propagate(0)
 
-            image_1 = ImageTk.PhotoImage(Image.open("start/b_ace.jpg"))
+            image_1 = ImageTk.PhotoImage(Image.open(c.WELCOME_SCREEN_CARD_1))
             image_1_label = tk.Label(frame, image=image_1, bg="green", )
             image_1_label.place(relx=0.05, rely=0.0, anchor="nw")
-            image_2 = ImageTk.PhotoImage(Image.open("start/n_ace.jpg"))
+            image_2 = ImageTk.PhotoImage(Image.open(c.WELCOME_SCREEN_CARD_2))
             image_2_label = tk.Label(frame, image=image_2, bg="green", )
             image_2_label.place(relx=0.95, rely=0.0, anchor="ne")
 
             self.row_rest.extend([image_1, image_2])
             self.row_rest.extend([image_1_label, image_2_label])
             self.start_frame.append(frame)
+
+    def __change_style_of_cards(self, users_pick):
+        """Write down into file type of cardstyle, which will result
+        in change of card style drawn on the screen"""
+        with open("user_settings.txt", "w") as file:
+            file.write(str(users_pick))
+            # sys.exit()
 
     def __menu_bar(self):
         """Create the menu bar on the top left side."""
@@ -145,8 +152,12 @@ class GUI(tk.Tk):
 
         game_menu = tk.Menu(top_menu, tearoff=False)
         top_menu.add_cascade(menu=game_menu, label="Menu")
-        game_menu.add_command(label="Restart",
+        game_menu.add_command(label="Restart (Restarts the game)",
                               command=lambda: Logic.next_game())
+        game_menu.add_command(label="Card style - Poker (Requires restart of program)",
+                              command=partial(self.__change_style_of_cards, 0))
+        game_menu.add_command(label="Card style - Bavarian (Requires restart of program)",
+                              command=partial(self.__change_style_of_cards, 1))
         game_menu.add_separator()
         game_menu.add_command(label="Exit", command=lambda: sys.exit())
 
@@ -229,6 +240,7 @@ class Logic:
         """Distribute cards between players, start of a round."""
         if not cls.hand_round_:
             cls.gui.start_frame[0].destroy()
+            Deck.create_deck()
             Deck.deck_shuffle()
 
             for _ in range(cls.pc_nr_cards):
@@ -301,15 +313,15 @@ class Logic:
                 # when player is changing color and has only 1 card left, pc
                 # below checks if can change the color to prevent the player's
                 # victory
-                if Hands(cls.pc_hands.my_cards()).most_freq() == cls.middle_card.card_color():
-                    x = Card(Hands(cls.pc_hands.my_cards()).second_most_freq())
+                if Hands(cls.pc_hands.my_cards()).most_frequent_color() == cls.middle_card.card_color():
+                    x = Card(Hands(cls.pc_hands.my_cards()).second_most_frequent_color())
                     if isinstance(x, list):
                         x.remove(cls.middle_card.card_color())
                         cls.middle_card = r.choice(x)
                     else:
                         cls.middle_card = x
                 else:
-                    cls.middle_card = Card(Hands(cls.pc_hands.my_cards()).most_freq())
+                    cls.middle_card = Card(Hands(cls.pc_hands.my_cards()).most_frequent_color())
                 cls.pc_hands.remove_card(changers[0])
 
             elif aces and aces_player and not cls.seven_penalty:
@@ -330,7 +342,7 @@ class Logic:
                 cls.pc_hands.remove_card(non_special[0])
 
             elif changers and not non_special:
-                cls.middle_card = Card(Hands(cls.pc_hands.my_cards()).most_freq())
+                cls.middle_card = Card(Hands(cls.pc_hands.my_cards()).most_frequent_color())
                 cls.pc_hands.remove_card(changers[0])
 
             if cls.middle_card.is_ace() and not cls.player_hands.aces():

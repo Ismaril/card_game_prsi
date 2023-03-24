@@ -8,9 +8,11 @@ class Deck:
     deck = []
     played_deck = []
 
-    for color in c.COLORS_ALL:
-        for value in c.NUMBERS_ALL:
-            deck.append(card_template(color, value))
+    @staticmethod
+    def create_deck():
+        for color in c.COLORS_ALL:
+            for value in c.NUMBERS_ALL:
+                Deck.deck.append(card_template(color, value))
 
     @staticmethod
     def deck_shuffle():

@@ -2,8 +2,10 @@ from deck import Deck
 from collections import Counter
 import constants as c
 
+
 class Hands:
     """Hand of player containing cards"""
+
     def __init__(self, cards):
         self.__cards = cards if isinstance(cards, list) else list(cards)
 
@@ -48,24 +50,27 @@ class Hands:
                     res.append(y)
         return res
 
-    def most_freq(self):
+    def most_frequent_color(self):
         """Find most frequent color when playing a changer"""
         if len(self.__cards) == len(self.changers()):
             return self.__cards[0][0]
         else:
-            data = Counter([y[0] for y in self.my_cards() if not y.endswith(c.CHANGER)])
+            data = Counter(
+                [y[0] for y in self.my_cards() if not y.endswith(c.CHANGER)]
+            )
             most_common = data.most_common()[0][0]
             return most_common
 
-    def second_most_freq(self):
+    def second_most_frequent_color(self):
         """Find second most frequent color when playing a changer"""
         if len(self.__cards) == len(self.changers()):
-            return Deck.colors
+            return c.COLORS_ALL
         else:
-            data = Counter([y[0] for y in self.__cards if not y.endswith(c.CHANGER)])
+            data = Counter(
+                [y[0] for y in self.__cards if not y.endswith(c.CHANGER)]
+            )
             if len(data.most_common()) == 1:
-                return Deck.colors
+                return c.COLORS_ALL
             else:
                 second_most_common = data.most_common()[1][0]
                 return second_most_common
-
