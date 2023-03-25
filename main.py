@@ -25,8 +25,6 @@ def master_mainloop():
         GUI.changer_icons_()
         GUI.round_end_screen()
         GUI.total_end_screen()
-        print("Drawed")
-    print("Skipped")
 
     GUI.after(1500, master_mainloop)  # run again after X ms
 

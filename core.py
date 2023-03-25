@@ -145,7 +145,7 @@ class GUI(tk.Tk):
             self.row_rest.extend([image_1_label, image_2_label])
 
             # condition for different style of cards
-            if not c.users_style_pick:
+            if not c.CARD_STYLE:
                 image_3 = ImageTk.PhotoImage(
                     Image.open(c.WELCOME_SCREEN_CARD_3))
                 image_3_label = tk.Label(frame, image=image_3,
@@ -165,9 +165,19 @@ class GUI(tk.Tk):
     def __change_style_of_cards(users_pick):
         """Write down into file type of cardstyle, which will result
         in change of card style drawn on the screen"""
+        with open("user_settings.txt", "r") as file:
+            background_settings = file.readline()[1]
         with open("user_settings.txt", "w") as file:
-            file.write(str(users_pick))
-            sys.exit()
+            file.write(f"{users_pick}{background_settings}")
+
+    @staticmethod
+    def __change_style_of_gui_background(users_pick):
+        """Write down into file type of background, which will result
+        in change of gui background"""
+        with open("user_settings.txt", "r") as file:
+            card_settings = file.readline()[0]
+        with open("user_settings.txt", "w") as file:
+            file.write(f"{card_settings}{users_pick}")
 
     def __menu_bar(self):
         """Create the menu bar on the top left side."""
@@ -178,14 +188,31 @@ class GUI(tk.Tk):
         top_menu.add_cascade(menu=game_menu, label="Menu")
         game_menu.add_command(label="Restart (Restarts the game)",
                               command=lambda: Logic.next_game())
-        game_menu.add_command(
-            label="Card style - Poker (Requires restart of program)",
-            command=partial(self.__change_style_of_cards, 0))
-        game_menu.add_command(
-            label="Card style - Bavarian (Requires restart of program)",
-            command=partial(self.__change_style_of_cards, 1))
         game_menu.add_separator()
         game_menu.add_command(label="Exit", command=lambda: sys.exit())
+
+        settings = tk.Menu(top_menu, tearoff=False)
+        top_menu.add_cascade(menu=settings, label="Settings")
+        settings.add_command(label="Changes below require restart of program")
+        settings.add_separator()
+        settings.add_command(
+            label="Card style - Poker",
+            command=partial(self.__change_style_of_cards, 0))
+        settings.add_command(
+            label="Card style - Bavarian",
+            command=partial(self.__change_style_of_cards, 1))
+        settings.add_command(
+            label="Background - Green",
+            command=partial(self.__change_style_of_gui_background, 0))
+        settings.add_command(
+            label="Background - Blue",
+            command=partial(self.__change_style_of_gui_background, 1))
+        settings.add_command(
+            label="Background - Red",
+            command=partial(self.__change_style_of_gui_background, 2))
+        settings.add_command(
+            label="Background - Black",
+            command=partial(self.__change_style_of_gui_background, 3))
 
         game_info = tk.Menu(top_menu, tearoff=False)
         top_menu.add_cascade(menu=game_info, label="Info")

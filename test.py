@@ -10,6 +10,7 @@ def __test_card_composition(player_hands: list,
                             played_deck: list):
     """
     Test card composition during runtime.
+    Check if all cards match the 4 colors and having 8 cards each.
 
     :param player_hands:
     :param pc_hands:

@@ -1,4 +1,5 @@
 from os import path
+from read_settings import read_settings_
 
 # CARD TYPES
 NUMBERS_ALL = ["07", "08", "09", "10", "11", "12", "13", "14"]
@@ -14,23 +15,17 @@ COLORS_ALL = ["L", "B", "N", "H"]  # [Leaves, Ballz, Nuts, Hearths]
 CARD_STYLES_FRONT = "card_styles"
 CARD_STYLES_BACK = path.join(CARD_STYLES_FRONT, "styles_back")
 
-# STYLES OF CARDS DRAWN AT THE SCREEN
-try:
-    with open("user_settings.txt", "r") as file:
-        users_style_pick = int(file.read())
-except FileNotFoundError as error:
-    print(error, "Exception handled")
-    users_style_pick = 0
-
+# STYLES OF CARDS DRAWN AT THE SCREEN AND BACKGROUND COLOR
+CARD_STYLE, BACKGROUND_STYLE = read_settings_()
 CARD_STYLE_FRONT_OPTIONS = ("poker_style_front", "bavarian_style_front")
 CARD_STYLE_BACK_OPTIONS = ("poker_blue", "bavarian_black")
 CARD_STYLE_FRONT = path.join(CARD_STYLES_FRONT,
-                             CARD_STYLE_FRONT_OPTIONS[users_style_pick])
+                             CARD_STYLE_FRONT_OPTIONS[CARD_STYLE])
 CARD_STYLE_BACK = path.join(CARD_STYLES_BACK,
-                            CARD_STYLE_BACK_OPTIONS[users_style_pick])
+                            CARD_STYLE_BACK_OPTIONS[CARD_STYLE])
 
 # ADJUST REL COORDINATES BASED ON SIZE OF CARDS
-match users_style_pick:
+match CARD_STYLE:
     case 0:
         RELY_PC_CARDS = 0.02
         RELY_PLAYER_CARDS = 0.98
@@ -54,7 +49,8 @@ match users_style_pick:
         RELY_CHANGER_ICONS_BASE = 0.425
 
 # STYLE OF BACKGROUND
-BACKROUND_COLOR = "green"
+BACKROUND_COLOR_OPTIONS = ("green", "blue", "red", "black")
+BACKROUND_COLOR = BACKROUND_COLOR_OPTIONS[BACKGROUND_STYLE]
 
 # INITIAL NUMBER OF CARDS FOR EACH PLAYER
 STARTER_COUNT = 5
