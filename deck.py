@@ -33,3 +33,9 @@ class Deck:
     def played_card(card):
         """Put current played card into played deck"""
         Deck.played_deck.append(card)
+
+    @staticmethod
+    def clear_deck():
+        """Remove contents of deck"""
+        Deck.deck.clear()
+        Deck.played_deck.clear()

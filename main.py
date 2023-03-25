@@ -1,4 +1,5 @@
 from core import Logic
+from test import runtime_test
 
 GUI = Logic.gui
 
@@ -9,11 +10,25 @@ def master_mainloop():
     Logic.logic_player()
     Logic.out_of_deck()
     Logic.check_the_status()
-    GUI.gui_main()
-    GUI.changer_icons_()
-    GUI.round_end_screen()
-    GUI.total_end_screen()
-    GUI.after(2000, master_mainloop)  # run again after X ms
+    runtime_test(verbose=False)
+
+    # Redraw screen only when there is some change during game.
+    if Logic.past_players_nr_of_cards != len(Logic.player_hands.my_cards()) \
+            or Logic.past_pc_nr_of_cards != len(Logic.pc_hands.my_cards()) \
+            or Logic.past_round != Logic.current_round \
+            or not GUI.GUI_drawn:
+        if Logic.past_round != Logic.current_round:
+            Logic.past_round += 1
+        Logic.past_players_nr_of_cards = len(Logic.player_hands.my_cards())
+        Logic.past_pc_nr_of_cards = len(Logic.pc_hands.my_cards())
+        GUI.gui_main()
+        GUI.changer_icons_()
+        GUI.round_end_screen()
+        GUI.total_end_screen()
+        print("Drawed")
+    print("Skipped")
+
+    GUI.after(1500, master_mainloop)  # run again after X ms
 
 
 if __name__ == "__main__":
@@ -21,4 +36,3 @@ if __name__ == "__main__":
     GUI.after(2000, master_mainloop)  # run first time after X ms
     GUI.mainloop()
 
-# TODO: run loop continuously but skip some functions if there is no user input
