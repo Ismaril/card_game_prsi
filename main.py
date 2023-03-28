@@ -1,3 +1,6 @@
+import time
+
+import constants
 from core import Logic
 from test import runtime_test, runtime_monitoring
 
@@ -6,6 +9,7 @@ GUI = Logic.gui
 
 def master_mainloop():
     Logic.hand_round()
+
     Logic.logic_pc()
     Logic.logic_player()
     Logic.out_of_deck()
@@ -16,7 +20,7 @@ def master_mainloop():
     if Logic.past_players_nr_of_cards != len(Logic.player_hands.my_cards()) \
             or Logic.past_pc_nr_of_cards != len(Logic.pc_hands.my_cards()) \
             or Logic.past_round != Logic.current_round \
-            or not GUI.GUI_drawn:
+            or not GUI.is_GUI_drawn:
         if Logic.past_round != Logic.current_round:
             Logic.past_round += 1
         Logic.past_players_nr_of_cards = len(Logic.player_hands.my_cards())
@@ -27,12 +31,13 @@ def master_mainloop():
         GUI.total_end_screen()
         runtime_monitoring(verbose=True)
 
-    GUI.after(2000, master_mainloop)  # run again after X ms
+    milliseconds = constants.DELAY_PLAYER if Logic.is_player_turn else constants.DELAY_PC
+    GUI.after(milliseconds, master_mainloop)  # run again after X ms
 
 
 if __name__ == "__main__":
     GUI.start_screen()
-    GUI.after(3000, master_mainloop)  # run first time after X ms
+    GUI.after(000, master_mainloop)  # run first time after X ms
     GUI.mainloop()
 
 # TODO: sometimes there is a bug where pc plays a seven, two
