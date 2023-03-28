@@ -1,3 +1,5 @@
+import time
+
 from deck import Deck
 from card import Card
 from hands import Hands
@@ -17,7 +19,7 @@ class GUI(tk.Tk):
         self.row_button_player = {}
         self.row_rest = []
         self.start_frame = []
-        self.GUI_drawn = False
+        self.is_GUI_drawn = False
 
         tk.Tk.__init__(self)
         self.grid()
@@ -95,6 +97,7 @@ class GUI(tk.Tk):
                      anchor="center")
         self.row_rest.append(image)
         self.row_rest.append(button)
+        self.is_deck_card_drawn = True
 
     def changer_icons_(self):
         """Create icons of 4 colors when playing any changer"""
@@ -265,18 +268,18 @@ class GUI(tk.Tk):
         if not Logic.total_game_ended:
             self.__destroy_all_widgets()
             self.__pc_cards()
-            self.__player_cards()
             self.__middle_card()
+            self.__player_cards()
             self.__deck_card()
-            self.GUI_drawn = True
+            self.is_GUI_drawn = True
 
 
 class Logic:
     start_screen = False
     game_started = False
     hand_round_ = False
-    pc_turn = r.choice([True, False])
-    player_turn = not pc_turn
+    is_pc_turn = r.choice([True, False])
+    is_player_turn = not is_pc_turn
     player_interaction = False
     game_ended = False
     total_game_ended = False
@@ -312,12 +315,12 @@ class Logic:
             del Deck.deck[0]
 
             if cls.middle_card.is_ace():
-                if cls.pc_turn:
-                    cls.player_turn = True
-                    cls.pc_turn = False
-                elif cls.player_turn:
-                    cls.player_turn = False
-                    cls.pc_turn = True
+                if cls.is_pc_turn:
+                    cls.is_player_turn = True
+                    cls.is_pc_turn = False
+                elif cls.is_player_turn:
+                    cls.is_player_turn = False
+                    cls.is_pc_turn = True
             elif cls.middle_card.is_changer():
                 cls.middle_card = Card(r.choice(c.COLORS_ALL))
             elif cls.middle_card.is_seven():
@@ -329,7 +332,9 @@ class Logic:
     @classmethod
     def logic_pc(cls):
         """Logic of a pc based on it's current hand list."""
-        if not cls.game_ended and cls.pc_turn:
+        if Logic.middle_card.is_only_color() and Logic.is_pc_turn:
+            time.sleep(c.DELAY_PC/1000)
+        if not cls.game_ended and cls.is_pc_turn:
             color = cls.middle_card.card_color()
             value = cls.middle_card.card_value()
             aces = Hands.best_pick(
@@ -359,8 +364,8 @@ class Logic:
                 else:
                     cls.pc_hands.add_new_card()
                     if cls.middle_card.is_ace():
-                        cls.pc_turn = False
-                        cls.player_turn = True
+                        cls.is_pc_turn = False
+                        cls.is_player_turn = True
 
             elif cls.middle_card.is_seven() and not sevens and cls.seven_penalty:
                 cls.out_of_deck()
@@ -412,13 +417,13 @@ class Logic:
                 # pc plays again due to ace
                 return
             else:
-                cls.pc_turn = False
-                cls.player_turn = True
+                cls.is_pc_turn = False
+                cls.is_player_turn = True
 
     @classmethod
     def logic_player(cls):
         """Logic of the player based on his current hand list."""
-        if not cls.game_ended and cls.player_turn and cls.player_interaction:
+        if not cls.game_ended and cls.is_player_turn and cls.player_interaction:
             if cls.middle_card.is_seven() and cls.seven_penalty and not cls.player_hands.sevens():
                 cls.out_of_deck()
                 for x in range(cls.seven_penalty):
@@ -466,8 +471,8 @@ class Logic:
                 # skip code if playing a changer or an ace (due to loop)
                 return
             else:
-                cls.pc_turn = True
-                cls.player_turn = False
+                cls.is_pc_turn = True
+                cls.is_player_turn = False
                 cls.player_interaction = False
 
     @classmethod
@@ -539,8 +544,8 @@ class Logic:
         cls.hand_round_ = False
         cls.player_interaction = False
         cls.changer_buttons = False
-        cls.pc_turn = r.choice([True, False])
-        cls.player_turn = not cls.pc_turn
+        cls.is_pc_turn = r.choice([True, False])
+        cls.is_player_turn = not cls.is_pc_turn
         cls.pc_hands = Hands("")
         cls.player_hands = Hands("")
         cls.middle_card = Card(" ")
@@ -582,7 +587,9 @@ class Logic:
     def changer_icons(cls, letter):
         """Change the middle card to 'color only' when played a changer."""
         cls.middle_card = Card(letter)
-        cls.pc_turn = True
-        cls.player_turn = False
+        cls.is_pc_turn = True
+        cls.is_player_turn = False
         cls.changer_buttons = False
         cls.gui.gui_main()
+
+

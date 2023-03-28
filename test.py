@@ -30,7 +30,7 @@ def __test_card_composition(player_hands: list,
     return deck_true == deck_runtime
 
 
-def runtime_test(verbose=False):
+def runtime_test():
     assert __test_card_composition(Logic.player_hands.my_cards(),
                                    Logic.pc_hands.my_cards(),
                                    Deck.deck,
@@ -41,7 +41,11 @@ def runtime_test(verbose=False):
         f"Deck: {sorted(Deck.deck)}\n" \
         f"Played deck: {sorted(Deck.played_deck)}\n"
 
+
+def runtime_monitoring(verbose=False):
     if verbose:
         print("pc", Logic.pc_hands.my_cards())
         print("middle", Logic.middle_card.get_card())
         print("player", Logic.player_hands.my_cards())
+        print("pleyed", Deck.played_deck)
+        print("-"*89)
