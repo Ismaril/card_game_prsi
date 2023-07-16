@@ -19,6 +19,6 @@ Game runs from mainloop in main.py. Back bone is in core.py which has two classe
 Functional
 
 ## Result:
-![in_game2](in_game_footage_2.JPG)
+![in_game2](in_game_footage_2.png)
 
 
